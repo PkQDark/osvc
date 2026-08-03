@@ -84,7 +84,7 @@ CREATE TABLE recipients (
 
 ## 4. Расписание напоминаний
 
-- Таймзона: `Europe/Moscow` (настраивается через env `TZ`).
+- Таймзона: `Europe/Prague` (настраивается через env `TZ`).
 - Основной ритм: **09:00, 11:00, 13:00, 15:00, 17:00, 19:00, 21:00** — cron-триггер
   APScheduler (`CronTrigger(hour="9,11,13,15,17,19,21")`).
 - На каждом тике:
@@ -257,7 +257,7 @@ User=ubuntu
 WorkingDirectory=/home/ubuntu/reminder_bot
 ExecStart=/home/ubuntu/reminder_bot/.venv/bin/python -m bot.main
 Restart=on-failure
-Environment=TZ=Europe/Moscow
+Environment=TZ=Europe/Prague
 
 [Install]
 WantedBy=multi-user.target
