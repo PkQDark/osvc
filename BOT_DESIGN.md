@@ -173,6 +173,20 @@ reminder_bot/
 Стек: **Python 3.11+, python-telegram-bot (async, v20+), APScheduler, SQLite
 (stdlib `sqlite3`), PyYAML**.
 
+Версии, реально протестированные локально (Python 3.13.2, см. `requirements.txt`):
+
+| Пакет | Версия |
+|---|---|
+| python-telegram-bot | 22.8 |
+| APScheduler | 3.11.3 |
+| PyYAML | 6.0.3 |
+
+**Важно:** `python-telegram-bot 20.8` (минимальная версия из диапазона «v20+»)
+несовместим с Python 3.13 — `Application.builder().build()` падает с
+`AttributeError: 'Updater' object has no attribute '_Updater__polling_cleanup_cb'`
+(проблема слотов у `TelegramObject` под 3.13). Поэтому в `requirements.txt`
+нижняя граница поднята до `>=21`, а не `>=20`.
+
 ## 7. Развёртывание на AWS EC2 (через git)
 
 Уже готово:

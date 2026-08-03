@@ -1,0 +1,14 @@
+[Unit]
+Description=Payment reminder Telegram bot
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/reminder_bot
+ExecStart=/home/ubuntu/reminder_bot/.venv/bin/python -m bot.main
+Restart=on-failure
+Environment=TZ=Europe/Prague
+
+[Install]
+WantedBy=multi-user.target
