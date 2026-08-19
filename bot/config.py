@@ -21,6 +21,7 @@ class Config:
     token: str
     timezone: str
     reminder_hours: list[int]
+    payment_account: str
     csv_path: Path
     db_path: Path
 
@@ -48,6 +49,7 @@ def load_config(
         token=token,
         timezone=timezone,
         reminder_hours=list(raw["reminder_hours"]),
+        payment_account=raw["payment_account"],
         csv_path=Path(csv_path),
         db_path=Path(db_path),
     )

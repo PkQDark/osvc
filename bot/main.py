@@ -30,9 +30,11 @@ async def _post_init(application: Application) -> None:
     config: Config = application.bot_data["config"]
 
     logger.info("Стартовый прогон рассылки напоминаний")
-    await send_reminders(application, storage)
+    await send_reminders(application, storage, config.payment_account)
 
-    scheduler = setup_scheduler(application, storage, config.timezone, config.reminder_hours)
+    scheduler = setup_scheduler(
+        application, storage, config.timezone, config.reminder_hours, config.payment_account
+    )
     scheduler.start()
     application.bot_data["scheduler"] = scheduler
     logger.info("Планировщик запущен: часы=%s, TZ=%s", config.reminder_hours, config.timezone)

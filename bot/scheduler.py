@@ -22,12 +22,13 @@ def _overdue_note(payment: Payment) -> str:
     return f" (просрочено на {days_overdue} дн.)" if days_overdue > 0 else ""
 
 
-def _reminder_text(payment: Payment) -> str:
+def _reminder_text(payment: Payment, payment_account: str) -> str:
     return (
         "💸 Напоминание об оплате\n"
         f"Дата: {format_date(payment.date)}{_overdue_note(payment)}\n"
         f"Кто платит: {payment.source}\n"
-        f"Сумма: {format_amount(payment.amount)}"
+        f"Сумма: {format_amount(payment.amount)}\n"
+        f"Счёт: {payment_account}"
     )
 
 
@@ -44,7 +45,7 @@ def _recipients_for(storage: Storage, payment: Payment) -> list[int]:
     return chat_ids
 
 
-async def send_reminders(application: Application, storage: Storage) -> None:
+async def send_reminders(application: Application, storage: Storage, payment_account: str) -> None:
     """Один тик: sync CSV -> DB, затем рассылка всем due&pending платежам (§4).
 
     Используется и как периодический cron-job, и как разовый прогон при
@@ -63,7 +64,7 @@ async def send_reminders(application: Application, storage: Storage) -> None:
             )
             continue
 
-        text = _reminder_text(payment)
+        text = _reminder_text(payment, payment_account)
         markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton("✅ Выполнено", callback_data=f"done:{payment.id}")]]
         )
@@ -85,6 +86,7 @@ def setup_scheduler(
     storage: Storage,
     timezone: str,
     reminder_hours: list[int],
+    payment_account: str,
 ) -> AsyncIOScheduler:
     """Один периодический job на фиксированные часы (§4) — не job-на-платёж."""
     scheduler = AsyncIOScheduler(timezone=timezone)
@@ -92,7 +94,7 @@ def setup_scheduler(
     scheduler.add_job(
         send_reminders,
         CronTrigger(hour=hours, timezone=timezone),
-        args=[application, storage],
+        args=[application, storage, payment_account],
         id="send_reminders",
         replace_existing=True,
     )
